@@ -1,18 +1,20 @@
-// App.jsx — Day 2: useGitHub hook wired up, shows profile card on search
+// App.jsx — Day 4: LanguageChart + StatsGrid added
 
 import { useState } from "react";
-import SearchBar     from "./components/SearchBar";
-import ProfileCard   from "./components/ProfileCard";
+import SearchBar      from "./components/SearchBar";
+import ProfileCard    from "./components/ProfileCard";
+import RepoList       from "./components/RepoList";
+import LanguageChart  from "./components/LanguageChart";
+import StatsGrid      from "./components/StatsGrid";
 import LoadingSpinner from "./components/LoadingSpinner";
-import ErrorCard     from "./components/ErrorCard";
-import useGitHub     from "./hooks/useGitHub";
+import ErrorCard      from "./components/ErrorCard";
+import useGitHub      from "./hooks/useGitHub";
 import "./index.css";
 
 function App() {
-  const [username, setUsername]       = useState("");
+  const [username, setUsername]         = useState("");
   const [searchedUser, setSearchedUser] = useState("");
 
-  // Custom hook — fetches user + repos when searchedUser changes
   const { user, repos, loading, error } = useGitHub(searchedUser);
 
   function handleSearch(value) {
@@ -38,13 +40,11 @@ function App() {
         onSearch={handleSearch}
       />
 
-      {/* RESULTS AREA */}
+      {/* RESULTS */}
       <div style={styles.results}>
 
-        {/* Loading state */}
         {loading && <LoadingSpinner username={searchedUser} />}
 
-        {/* Error state */}
         {error && !loading && (
           <ErrorCard
             message={error}
@@ -52,16 +52,24 @@ function App() {
           />
         )}
 
-        {/* Success state — profile card */}
         {user && !loading && !error && (
           <div style={styles.grid}>
+
+            {/* Row 1: Profile card */}
             <ProfileCard user={user} />
-            {/* Day 3: RepoCard list goes here */}
-            {/* Day 4: Language chart + StatsGrid go here */}
+
+            {/* Row 2: Stats + Language chart side by side */}
+            <div style={styles.twoCol}>
+              <StatsGrid user={user} repos={repos} />
+              <LanguageChart repos={repos} />
+            </div>
+
+            {/* Row 3: Top repos */}
+            <RepoList repos={repos} />
+
           </div>
         )}
 
-        {/* Empty state — nothing searched yet */}
         {!searchedUser && !loading && (
           <div style={styles.empty}>
             <span style={styles.emptyIcon}>🔍</span>
@@ -78,7 +86,7 @@ function App() {
 
 const styles = {
   wrapper: {
-    maxWidth: "860px",
+    maxWidth: "960px",
     margin: "0 auto",
     padding: "40px 16px 60px",
   },
@@ -102,6 +110,11 @@ const styles = {
   grid: {
     display: "flex",
     flexDirection: "column",
+    gap: "24px",
+  },
+  twoCol: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
     gap: "20px",
   },
   empty: {
@@ -111,9 +124,7 @@ const styles = {
     gap: "12px",
     padding: "60px 0",
   },
-  emptyIcon: {
-    fontSize: "40px",
-  },
+  emptyIcon: { fontSize: "40px" },
   emptyText: {
     fontSize: "14px",
     color: "var(--muted)",
