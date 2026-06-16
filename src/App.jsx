@@ -1,4 +1,4 @@
-// App.jsx — Day 4: LanguageChart + StatsGrid added
+// App.jsx — Day 5: dark/light mode toggle, footer, full polish
 
 import { useState } from "react";
 import SearchBar      from "./components/SearchBar";
@@ -14,6 +14,7 @@ import "./index.css";
 function App() {
   const [username, setUsername]         = useState("");
   const [searchedUser, setSearchedUser] = useState("");
+  const [darkMode, setDarkMode]         = useState(true);
 
   const { user, repos, loading, error } = useGitHub(searchedUser);
 
@@ -22,14 +23,26 @@ function App() {
     setSearchedUser(value.trim().toLowerCase());
   }
 
+  function toggleTheme() {
+    const next = !darkMode;
+    setDarkMode(next);
+    document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
+  }
+
   return (
     <div style={styles.wrapper}>
 
       {/* HEADER */}
       <header style={styles.header}>
-        <h1 style={styles.logo}>
-          <span style={{ color: "var(--accent)" }}>Dev</span>Pulse
-        </h1>
+        <div style={styles.headerTop}>
+          <h1 style={styles.logo}>
+            <span style={{ color: "var(--accent)" }}>Dev</span>Pulse
+          </h1>
+          {/* Dark / Light toggle */}
+          <button onClick={toggleTheme} style={styles.themeBtn} title="Toggle theme">
+            {darkMode ? "☀️" : "🌙"}
+          </button>
+        </div>
         <p style={styles.tagline}>GitHub Profile Analyzer</p>
       </header>
 
@@ -54,19 +67,12 @@ function App() {
 
         {user && !loading && !error && (
           <div style={styles.grid}>
-
-            {/* Row 1: Profile card */}
             <ProfileCard user={user} />
-
-            {/* Row 2: Stats + Language chart side by side */}
-            <div style={styles.twoCol}>
+            <div className="two-col" style={styles.twoCol}>
               <StatsGrid user={user} repos={repos} />
               <LanguageChart repos={repos} />
             </div>
-
-            {/* Row 3: Top repos */}
             <RepoList repos={repos} />
-
           </div>
         )}
 
@@ -76,10 +82,30 @@ function App() {
             <p style={styles.emptyText}>
               Search any GitHub username to analyze their profile
             </p>
+            <p style={{ fontSize: "12px", color: "var(--muted)", marginTop: "6px" }}>
+              Try searching your own username: <strong style={{ color: "var(--accent)" }}>abinaya-arjunan</strong>
+            </p>
           </div>
         )}
 
       </div>
+
+      {/* FOOTER */}
+      <footer style={styles.footer}>
+        Built with React + Recharts &nbsp;·&nbsp;
+        <a
+          href="https://github.com/abinaya-arjunan/devpulse"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on GitHub
+        </a>
+        &nbsp;·&nbsp; Data from{" "}
+        <a href="https://api.github.com" target="_blank" rel="noopener noreferrer">
+          GitHub API
+        </a>
+      </footer>
+
     </div>
   );
 }
@@ -94,11 +120,29 @@ const styles = {
     textAlign: "center",
     marginBottom: "32px",
   },
+  headerTop: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "6px",
+    position: "relative",
+  },
   logo: {
     fontSize: "36px",
     fontWeight: 700,
     letterSpacing: "-1px",
-    marginBottom: "6px",
+  },
+  themeBtn: {
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
+    borderRadius: "8px",
+    padding: "6px 10px",
+    fontSize: "18px",
+    cursor: "pointer",
+    position: "absolute",
+    right: 0,
+    transition: "border-color 0.15s",
   },
   tagline: {
     fontSize: "14px",
@@ -121,7 +165,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "12px",
+    gap: "8px",
     padding: "60px 0",
   },
   emptyIcon: { fontSize: "40px" },
@@ -129,6 +173,12 @@ const styles = {
     fontSize: "14px",
     color: "var(--muted)",
     textAlign: "center",
+  },
+  footer: {
+    marginTop: "60px",
+    textAlign: "center",
+    fontSize: "12px",
+    color: "var(--muted)",
   },
 };
 
