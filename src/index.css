@@ -1,7 +1,5 @@
-/* ── RESET & BASE ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── DARK THEME (default) ── */
 :root {
   --bg:      #0d1117;
   --surface: #161b22;
@@ -14,7 +12,6 @@
   --font:    'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── LIGHT THEME ── */
 [data-theme="light"] {
   --bg:      #ffffff;
   --surface: #f6f8fa;
@@ -37,23 +34,37 @@ body {
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* ── LINKS ── */
 a { color: var(--accent); }
 a:hover { text-decoration: underline; }
 
-/* ── CARDS hover effect ── */
-.repo-card:hover {
-  border-color: var(--accent) !important;
-  transform: translateY(-2px);
-  transition: all 0.15s;
+/* ══════════════════
+   MOBILE RESPONSIVE
+   ══════════════════ */
+
+/* Profile card stats — 2 columns on mobile */
+@media (max-width: 600px) {
+  .profile-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .profile-top {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .profile-avatar {
+    width: 64px !important;
+    height: 64px !important;
+  }
+  .profile-info-row {
+    justify-content: center !important;
+  }
 }
 
-/* ── RESPONSIVE ── */
+/* Two column layout — stack on mobile */
 @media (max-width: 640px) {
   .two-col {
     grid-template-columns: 1fr !important;
@@ -64,4 +75,31 @@ a:hover { text-decoration: underline; }
   .repo-grid {
     grid-template-columns: 1fr !important;
   }
+  .search-row {
+    flex-wrap: wrap !important;
+  }
+  .search-btn {
+    width: 100% !important;
+    border-radius: 8px !important;
+  }
+  .example-row {
+    justify-content: center !important;
+  }
+  .header-top {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .theme-btn {
+    position: static !important;
+  }
+  .logo {
+    font-size: 28px !important;
+  }
+  .results-card {
+    padding: 20px 16px !important;
+  }
+  .lb-row {
+    grid-template-columns: 28px 1fr auto !important;
+  }
+  .lb-date { display: none !important; }
 }
